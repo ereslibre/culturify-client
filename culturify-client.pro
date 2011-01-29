@@ -4,20 +4,26 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT          += core gui network
 
-TARGET = culturify-client
-TEMPLATE = app
+INCLUDEPATH += /usr/include/mongo
 
+LIBS += -lqjson \
+        -lmongoclient \
+        -lboost_thread-mt \
+        -lboost_filesystem \
+        -lboost_program_options
 
-SOURCES += main.cpp\
-        mainwindow.cpp \
-    request.cpp
+TARGET       = culturify-client
 
-HEADERS  += mainwindow.h \
-    request.h \
-    config.h
+TEMPLATE     = app
 
-FORMS    += mainwindow.ui
+SOURCES     += main.cpp\
+               mainwindow.cpp \
+               request.cpp
 
-QT       += network
+HEADERS     += mainwindow.h \
+               request.h \
+               config.h
+
+FORMS       += mainwindow.ui
