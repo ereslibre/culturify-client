@@ -21,25 +21,41 @@
 #include "ui_mainwindow.h"
 
 #include "request.h"
+#include "database.h"
+
+#include <qjson/parser.h>
 
 #include <QtCore/QDebug>
 #include <QtNetwork/QNetworkReply>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
-    , ui(new Ui::MainWindow)
+    , m_ui(new Ui::MainWindow)
+    , m_database(0)
 {
-    ui->setupUi(this);
+    m_ui->setupUi(this);
 
     Request::sendRequest(this, SLOT(finished(QNetworkReply*)), "/ddbb");
 }
 
 MainWindow::~MainWindow()
 {
-    delete ui;
+    delete m_ui;
+    delete m_database;
 }
 
 void MainWindow::finished(QNetworkReply *reply)
 {
-    qDebug() << reply->readAll();
+    bool ok;
+
+    QJson::Parser parser;
+    const QVariant contents_ = parser.parse(reply->readAll(), &ok);
+
+    if (ok) {
+        const QVariantMap contents = contents_.toMap();
+        if (!contents["status"].toInt()) {
+            const QVariantMap data = contents["data"].toMap();
+            m_database = new Database(data["host"].toString(), data["port"].toUInt(), data["database"].toString(), data["username"].toString(), data["password"].toString());
+        }
+    }
 }

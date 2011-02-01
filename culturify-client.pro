@@ -12,7 +12,8 @@ LIBS += -lqjson \
         -lmongoclient \
         -lboost_thread-mt \
         -lboost_filesystem \
-        -lboost_program_options
+        -lboost_program_options \
+        -lboost_system
 
 TARGET       = culturify-client
 
@@ -20,10 +21,12 @@ TEMPLATE     = app
 
 SOURCES     += main.cpp\
                mainwindow.cpp \
-               request.cpp
+               request.cpp \
+               database.cpp
 
 HEADERS     += mainwindow.h \
                request.h \
-               config.h
+               config.h \
+               database.h
 
 FORMS       += mainwindow.ui

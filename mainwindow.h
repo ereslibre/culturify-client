@@ -22,6 +22,7 @@
 
 #include <QMainWindow>
 
+class Database;
 class QNetworkReply;
 
 namespace Ui {
@@ -40,7 +41,8 @@ private Q_SLOTS:
     void finished(QNetworkReply *reply);
 
 private:
-    Ui::MainWindow *ui;
+    Ui::MainWindow *m_ui;
+    Database       *m_database;
 };
 
 #endif // MAINWINDOW_H

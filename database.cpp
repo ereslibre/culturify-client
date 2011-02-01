@@ -17,18 +17,24 @@
  * along with Culturify. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CONFIG_H
-#define CONFIG_H
+#include "database.h"
 
-#include <QtCore/QString>
+#include <iostream>
+#include <client/dbclient.h>
 
-class Config
+using namespace mongo;
+
+Database::Database(const QString &host, quint32 port, const QString &database, const QString &username, const QString &password)
+    : m_connection(new DBClientConnection)
 {
-public:
-    static QString fullAPIPath(const QString &path)
-    {
-        return QString("http://localhost/api%1").arg(path);
-    }
-};
+    std::string error;
 
-#endif // CONFIG_H
+    HostAndPort hostAndPort(host.toStdString(), port);
+    m_connection->connect(hostAndPort);
+    m_connection->auth(database.toStdString(), username.toStdString(), password.toStdString(), error);
+}
+
+Database::~Database()
+{
+    delete m_connection;
+}
