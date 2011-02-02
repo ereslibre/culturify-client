@@ -26,6 +26,7 @@ using namespace mongo;
 
 Database::Database(const QString &host, quint32 port, const QString &database, const QString &username, const QString &password)
     : m_connection(new DBClientConnection)
+    , m_database(database)
 {
     std::string error;
 
@@ -37,4 +38,26 @@ Database::Database(const QString &host, quint32 port, const QString &database, c
 Database::~Database()
 {
     delete m_connection;
+}
+
+QList<QVariantMap> Database::findAll() const
+{
+    QList<QVariantMap> res;
+
+    auto_ptr<DBClientCursor> cursor = m_connection->query(QString("%1.culture").arg(m_database).toStdString(), BSONObj());
+    while (cursor->more()) {
+        QVariantMap newMap;
+        BSONObj obj = cursor->next();
+        std::set<std::string> fields;
+        obj.getFieldNames(fields);
+        std::set<std::string>::iterator it = fields.begin();
+        while (it != fields.end()) {
+            const std::string field = (*it);
+            newMap[QString::fromStdString(field)] = QString::fromStdString(obj[field].str());
+            ++it;
+        }
+        res << newMap;
+    }
+
+    return res;
 }

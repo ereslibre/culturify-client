@@ -56,6 +56,7 @@ void MainWindow::finished(QNetworkReply *reply)
         if (!contents["status"].toInt()) {
             const QVariantMap data = contents["data"].toMap();
             m_database = new Database(data["host"].toString(), data["port"].toUInt(), data["database"].toString(), data["username"].toString(), data["password"].toString());
+            qDebug() << m_database->findAll();
         }
     }
 }

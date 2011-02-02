@@ -20,7 +20,9 @@
 #ifndef DATABASE_H
 #define DATABASE_H
 
+#include <QtCore/QList>
 #include <QtCore/QString>
+#include <QtCore/QVariantMap>
 
 namespace mongo {
     class DBClientConnection;
@@ -32,7 +34,10 @@ public:
     Database(const QString &host, quint32 port, const QString &database, const QString &username, const QString &password);
     virtual ~Database();
 
+    QList<QVariantMap> findAll() const;
+
 private:
+    QString                          m_database;
     mongo::DBClientConnection *const m_connection;
 };
 
